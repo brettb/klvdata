@@ -1,0 +1,85 @@
+Instructions for Extracting KLV Data from Video Files
+================================================
+
+These instructions will help you extract and parse KLV (Key-Length-Value) metadata from video files using FFmpeg and the klvdata Python package.
+
+Prerequisites
+------------
+1. FFmpeg installed on your system
+2. Python 3.x
+3. klvdata package installed (can be installed in development mode using `pip install -e . after cloneing the repository athttps://github.com/paretech/klvdata`)
+4. You can also pip install the package using `pip install klvdata` (if you have pip installed)
+
+Steps to Extract KLV Data
+------------------------
+
+1. For MPEG-TS files (*.ts, *.mpg):
+   ```bash
+   # View video streams and identify KLV data stream
+   ffprobe videos/your_video.ts
+
+   # Extract KLV data and parse it
+   ffmpeg -i videos/your_video.ts -map 0:1 -codec copy -f data - | \
+   PYTHONPATH=. python3 examples/pprint_stdin.py > output.txt
+   ```
+
+   Note: The `-map 0:1` parameter assumes the KLV data is in the second stream (index 1).
+   If your KLV data is in a different stream, adjust the number accordingly.
+
+2. For MP4 files with KLV metadata:
+   ```bash
+   # First check if the file has KLV data streams
+   ffprobe videos/your_video.mp4
+
+   # If KLV stream is present, extract and parse it
+   ffmpeg -i videos/your_video.mp4 -map 0:d:0 -codec copy -f data - | \
+   PYTHONPATH=. python3 examples/pprint_stdin.py > output.txt
+   ```
+
+Common Issues and Solutions
+-------------------------
+1. If you get "No such file or directory":
+   - Make sure you're in the project root directory
+   - Check that the video file path is correct
+
+2. If you get "Stream map '0:1' matches no streams":
+   - Use ffprobe to check which stream contains the KLV data
+   - Adjust the stream number in the -map parameter
+
+3. If you get "ModuleNotFoundError: No module named 'klvdata'":
+   - Make sure you've installed the package: pip install -e .
+   - Verify PYTHONPATH is set correctly
+
+Example Usage
+------------
+1. Extract KLV from an MPEG-TS file:
+   ```bash
+   ffmpeg -i videos/Day\ Flight.mpg -map 0:1 -codec copy -f data - | \
+   PYTHONPATH=. python3 examples/pprint_stdin.py > klv_output.txt
+   ```
+
+2. Extract KLV from an MP4 file (if it contains KLV data):
+   ```bash
+   ffmpeg -i videos/video.mp4 -map 0:d:0 -codec copy -f data - | \
+   PYTHONPATH=. python3 examples/pprint_stdin.py > klv_output.txt
+   ```
+
+Understanding the Output
+----------------------
+The extracted KLV data will contain various metadata fields such as:
+- PrecisionTimeStamp: Timestamp of the metadata
+- SensorLatitude/Longitude: Position of the sensor
+- SensorTrueAltitude: Altitude of the sensor
+- PlatformHeadingAngle: Direction the platform is facing
+- SensorHorizontalFieldOfView: Camera's horizontal field of view
+- And many other UAS (Unmanned Aircraft System) specific fields
+
+Each metadata set will include a checksum for data integrity verification.
+
+Notes
+-----
+- Always check the video file format and stream information using ffprobe first
+- Some video files may not contain KLV metadata
+- The KLV data stream index may vary between files
+- Use relative paths when working with files in the project directory
+- The examples assume you're running commands from the project root directory

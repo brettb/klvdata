@@ -30,10 +30,20 @@ Features
 - Parses KLV metadata streams.
 - Supports `MISB ST`_ 0601 UAS Datalink Local Set.
 - Supports `MISB ST`_ 0102 Security Metadata Local Set.
-- Built for Python 3.5, 3.6.
+- Built for Python 3.x
 - Requires no external Python dependencies.
 
 .. _MISB ST: http://www.gwg.nga.mil/misb/st_pubs.html
+
+Supported Standards
+-------------------
++---------------------+-------------------+-----------------------------------------+
+| MISB Standard       | Local Set         | Supported Elements                      |
++=====================+===================+=========================================+
+| ST 0601.8           | UAS Datalink      | 87/127 elements (Full list in docs)     |
++---------------------+-------------------+-----------------------------------------+
+| ST 0102.8           | Security Metadata | Classification markings + 5 extensions  |
++---------------------+-------------------+-----------------------------------------+
 
 Quick Start
 -----------
@@ -133,11 +143,3 @@ If you have FFmpeg installed and want to try it on real video from a drone with 
 Documentation
 -------------
 Documentation is available at https://paretech.github.io/klvdata.
-
-Contributing
-------------
-Contributions are welcome! See `Contributing <CONTRIBUTING.md>`_ for details.
-
-Contributors List:
-------------------
-- `Fran Raga <https://github.com/All4Gis>`_
